@@ -57,6 +57,12 @@ flowchart TB
     end
 ```
 
+
+
+## Architecture & CI/CD Pipeline
+
+![VEGAH Architecture and CI/CD Pipeline](./VEGAH DevOps Architecture & CI_CD Pipeline.png)
+
 ### CI/CD Architecture
 
 ```mermaid
