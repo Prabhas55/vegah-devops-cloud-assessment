@@ -5,6 +5,12 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'README.md'
+      - 'architecture.md'
+      - 'docs/**'
+      - '*.png'
+      - '*.svg'
   workflow_dispatch:
 
 permissions:
