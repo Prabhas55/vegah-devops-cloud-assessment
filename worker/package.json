@@ -1,0 +1,14 @@
+{
+  "name": "vegah-worker",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node worker.js"
+  },
+  "dependencies": {
+    "bullmq": "5.58.5",
+    "dotenv": "^16.4.7",
+    "ioredis": "5.8.1",
+    "pg": "8.16.3"
+  }
+}
