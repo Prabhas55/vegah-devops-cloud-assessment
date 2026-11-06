@@ -61,7 +61,7 @@ flowchart TB
 
 ## Architecture & CI/CD Pipeline
 
-![VEGAH Architecture and CI/CD Pipeline](./VEGAH DevOps Architecture & CI_CD Pipeline.png)
+![VEGAH Architecture and CI/CD Pipeline](./architecture.png)
 
 ### CI/CD Architecture
 
