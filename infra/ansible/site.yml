@@ -1,0 +1,31 @@
+---
+- name: Verify VEGAH Singapore DR server
+  hosts: dr_servers
+  gather_facts: false
+
+  tasks:
+    - name: Check operating system
+      ansible.builtin.command: cat /etc/os-release
+      changed_when: false
+
+    - name: Check Docker service
+      ansible.builtin.command: systemctl is-active docker
+      changed_when: false
+
+    - name: Check Docker version
+      ansible.builtin.command: docker --version
+      changed_when: false
+
+    - name: List running containers
+      ansible.builtin.command:
+        cmd: docker ps --format '{{ "{{" }}.Names{{ "}}" }} {{ "{{" }}.Status{{ "}}" }}'
+      changed_when: false
+
+    - name: Check DR application directory
+      ansible.builtin.stat:
+        path: /opt/vegah-dr/app
+      register: dr_app_directory
+
+    - name: Display application directory status
+      ansible.builtin.debug:
+        msg: "DR application directory exists: {{ dr_app_directory.stat.exists }}"

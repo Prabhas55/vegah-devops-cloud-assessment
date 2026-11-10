@@ -8,3 +8,14 @@ node_modules/
 **/coverage/
 *.log
 .DS_Store
+
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+crash.log
+
+# Ansible
+**/inventory.ini
+**/*.retry
