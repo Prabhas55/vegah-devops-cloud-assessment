@@ -1,8 +1,0 @@
-dr_region            = "ap-southeast-1"
-dr_availability_zone = "ap-southeast-1a"
-vpc_cidr             = "10.20.0.0/16"
-public_subnet_cidr   = "10.20.1.0/24"
-ami_id               = "ami-063d94c44d4eba6e0"
-instance_type        = "t3.medium"
-root_volume_size     = 30
-project_name         = "VEGAH"
