@@ -1,0 +1,52 @@
+# Overlay for the PRIMARY host. Activated through COMPOSE_FILE in .env:
+#   COMPOSE_FILE=docker-compose.yml:dr/compose.primary.yml
+# (Compose reads COMPOSE_FILE from .env, so the existing CI deploy keeps working.)
+services:
+  postgres:
+    command:
+      - postgres
+      - -c
+      - "listen_addresses=*"
+      - -c
+      - "wal_level=replica"
+      - -c
+      - "max_wal_senders=10"
+      - -c
+      - "max_replication_slots=10"
+      - -c
+      - "wal_keep_size=256MB"
+      - -c
+      - "max_slot_wal_keep_size=2GB"
+      - -c
+      - "hot_standby=on"
+      - -c
+      - "ssl=on"
+      - -c
+      - "ssl_cert_file=/certs/server.crt"
+      - -c
+      - "ssl_key_file=/certs/server.key"
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./dr/certs:/certs:ro
+
+  redis:
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+      - --requirepass
+      - "${REDIS_PASSWORD}"
+      - --masterauth
+      - "${REDIS_PASSWORD}"
+    environment:
+      REDISCLI_AUTH: ${REDIS_PASSWORD}
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:
+    external: true
+    name: dda9364218bca8baa97f5688f084a1664f02616d8bd1a25de75c4747f7ca7dc0

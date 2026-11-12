@@ -1,0 +1,15 @@
+[Unit]
+Description=VEGAH DR watchdog (auto-failover when primary is down)
+After=docker.service network-online.target
+Requires=docker.service
+
+[Service]
+Type=simple
+User=__USER__
+WorkingDirectory=__REPO_DIR__
+ExecStart=__REPO_DIR__/scripts/watchdog.sh
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

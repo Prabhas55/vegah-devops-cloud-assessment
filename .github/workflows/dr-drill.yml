@@ -1,0 +1,74 @@
+name: DR Drill (manual)
+
+# Run from the Actions tab -> "DR Drill (manual)" -> choose an action.
+# Extra secrets needed: DR_HOST, DR_USER, DR_SSH_KEY, APP_URL (e.g. http://app.example.com)
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "DR action to execute"
+        type: choice
+        required: true
+        options:
+          - simulate-outage
+          - failover
+          - failback
+          - verify
+
+jobs:
+  simulate-outage:
+    if: inputs.action == 'simulate-outage'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kill the primary stack
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/vegah-devops-cloud-assessment
+            ./scripts/simulate-outage.sh
+
+  failover:
+    if: inputs.action == 'failover'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Promote the DR site
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.DR_HOST }}
+          username: ${{ secrets.DR_USER }}
+          key: ${{ secrets.DR_SSH_KEY }}
+          command_timeout: 15m
+          script: |
+            cd ~/vegah-devops-cloud-assessment
+            ./scripts/failover.sh
+
+  failback:
+    if: inputs.action == 'failback'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run failback orchestration
+        env:
+          PRIMARY_IP: ${{ secrets.EC2_HOST }}
+          DR_IP: ${{ secrets.DR_HOST }}
+          SSH_USER: ${{ secrets.EC2_USER }}
+        run: |
+          install -m 600 /dev/null primary.pem
+          install -m 600 /dev/null dr.pem
+          printf '%s\n' '${{ secrets.EC2_SSH_KEY }}' > primary.pem
+          printf '%s\n' '${{ secrets.DR_SSH_KEY }}' > dr.pem
+          SSH_KEY_PRIMARY=primary.pem SSH_KEY_DR=dr.pem ./scripts/failback.sh
+          rm -f primary.pem dr.pem
+
+  verify:
+    if: inputs.action == 'verify'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the public endpoint and data
+        run: |
+          set -e
+          echo "Health:"; curl -fsS "${{ secrets.APP_URL }}/api/health"; echo
+          echo "Jobs stored: $(curl -fsS '${{ secrets.APP_URL }}/api/jobs' | jq length)"

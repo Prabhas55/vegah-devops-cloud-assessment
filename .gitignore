@@ -8,3 +8,17 @@ node_modules/
 **/coverage/
 *.log
 .DS_Store
+
+# DR
+dr/certs/
+.dr-state/
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/terraform.tfvars
+*.pem
+
+# Terraform generated plans
+terraform/*.tfplan
+terraform/dr-plan
+terraform/plan-review.txt

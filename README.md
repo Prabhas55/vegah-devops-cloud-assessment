@@ -499,3 +499,15 @@ The named PostgreSQL volume is retained when using `docker compose down`. Avoid 
 **Prabhas Nalajala**
 
 VEGAH DevOps Cloud Engineering Internship Assessment
+
+## Disaster Recovery (Round 2)
+
+Cross-region DR for the whole stack: PostgreSQL streaming replication, Redis replica, Route 53 failover DNS, Terraform-provisioned DR site, and scripted failover/failback.
+
+| Doc | Content |
+|---|---|
+| [docs/DR.md](docs/DR.md) | Architecture, RTO/RPO, security, limitations |
+| [docs/RUNBOOK.md](docs/RUNBOOK.md) | Setup, disaster drill, failover, failback, troubleshooting |
+| [docs/SUBMISSION.md](docs/SUBMISSION.md) | Video script and submission email template |
+| [terraform/](terraform/) | DR infrastructure as code |
+| [scripts/](scripts/) | Failover, failback, verification, RTO measurement |

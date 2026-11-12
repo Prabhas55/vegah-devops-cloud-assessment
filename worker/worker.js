@@ -7,6 +7,8 @@ const { Pool } = require('pg');
 const connection = {
   host: process.env.REDIS_HOST || '127.0.0.1',
   port: Number(process.env.REDIS_PORT || 6379),
+  // Optional: required once Redis is exposed for cross-region replication.
+  password: process.env.REDIS_PASSWORD || undefined,
 };
 
 const pool = new Pool({

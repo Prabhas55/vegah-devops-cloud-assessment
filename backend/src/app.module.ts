@@ -19,6 +19,8 @@ import { DatabaseModule } from './database/database.module.js';
         connection: {
           host: config.get<string>('REDIS_HOST', 'localhost'),
           port: config.get<number>('REDIS_PORT', 6379),
+          // Optional: required once Redis is exposed for cross-region replication.
+          password: config.get<string>('REDIS_PASSWORD') || undefined,
         },
       }),
     }),
