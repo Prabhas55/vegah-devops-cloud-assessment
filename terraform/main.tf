@@ -43,7 +43,22 @@ resource "aws_security_group" "dr" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  # Needed for failback (the original primary replicates FROM the DR host)
+  ingress {
+    description = "PostgreSQL from primary (failback)"
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["${var.primary_ip}/32"]
+  }
 
+  ingress {
+    description = "Redis from primary (failback)"
+    from_port   = 6379
+    to_port     = 6379
+    protocol    = "tcp"
+    cidr_blocks = ["${var.primary_ip}/32"]
+  }
 
   egress {
     from_port   = 0
