@@ -12,6 +12,11 @@ log "Starting standby data tier (base backup from ${PRIMARY_HOST})"
 dc up -d postgres redis
 wait_for "postgres standby accepting connections" 600 pg_ready
 wait_for "postgres in recovery (standby)" 60 pg_in_recovery
+if [ -n "${DB_USER:-}" ]; then
+  dc exec -T -e PGPASSWORD="${DB_PASSWORD}" postgres \
+    psql -h postgres -U "${DB_USER}" -d "${DB_NAME}" -tAc "select 1" >/dev/null \
+    || die "DB_USER/DB_PASSWORD/DB_NAME in .env cannot log in to the standby (must match the primary)"
+fi
 wait_for "redis replica linked" 120 redis_linked
 
 log "Pre-pulling application images (reduces RTO)"

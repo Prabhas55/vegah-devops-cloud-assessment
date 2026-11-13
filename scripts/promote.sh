@@ -31,6 +31,8 @@ if [ "${1:-}" = "--primary-overlay" ]; then
   log "Switching to primary overlay and starting full stack"
   dc up -d --no-build
 else
+  log "Refreshing application images"
+  dc --profile app pull frontend backend worker nginx || log "WARN: image pull failed, using cached images"
   log "Starting application tier"
   dc --profile app up -d --no-build
 fi
