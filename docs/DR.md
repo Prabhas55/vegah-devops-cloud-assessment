@@ -42,10 +42,18 @@ flowchart TB
 
 ## Objectives
 
-| Metric | Target | How it is achieved | Measured (fill in after your drill) |
-|---|---|---|---|
-| **RPO** (data loss) | **0** for PostgreSQL with sync replication on; seconds with async | `synchronous_standby_names` = standby; commits are acknowledged only after the DR standby has them | ____ rows lost (`verify-data.sh`) |
-| **RTO** (downtime) | **<= 5 min** | Route 53 detection (10s x 3 = ~30s) + DNS TTL (30s) + watchdog threshold + promotion and app start (~60-90s) | ____ s (`measure-rto.sh`) |
+| Metric | Target | Measured (14 Nov 2026) |
+|---|---|---|
+| **RPO** (data loss) | 0 for PostgreSQL | **0**. Snapshot of 31 job IDs taken before the outage; after failover 31 present, 0 missing (`verify-data.sh compare`). Synchronous replication was on. |
+| **RTO** (downtime at the public URL) | <= 5 min | **about 65 s** (last successful probe 09:07:41 IST, first successful probe 09:08:48 IST, `measure-rto.sh`) |
+| Failover on the DR host | | 63 s from the first failed health check to the app healthy: detection 3 x 5 s, fencing of the old primary about 37 s, promotion 16 s |
+
+## Test results (drill on 14 Nov 2026)
+- Setup: Mumbai primary (ap-south-1), Singapore DR (ap-southeast-1), synchronous replication, watchdog threshold 3 x 5 s, Route 53 TTL 30 s, health check 10 s x 3.
+- Outage: all primary containers killed. The DR watchdog detected the failure, fenced (stopped) the Mumbai instance through the AWS API, promoted PostgreSQL and Redis, and started the application tier.
+- Data: 31/31 job IDs preserved; new jobs created and completed on the DR site.
+- Notes: the first `measure-rto.sh` run printed 0.0 s because `bc` was missing on the test laptop (fixed to use `awk`); the figure above is from the probe timestamps.
+- Trade-offs: fencing adds about 37 s but prevents split-brain. Redis replication is asynchronous. Detection relies on a single observer (the DR host).
 
 Notes on honesty of these numbers:
 - Redis replication is asynchronous. A job accepted in the last milliseconds before the crash exists in PostgreSQL (status `WAITING`) but may be missing from the replicated queue. Postgres is the source of truth; such jobs can be re-queued with a reconcile query (listed under limitations).

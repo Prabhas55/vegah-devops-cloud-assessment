@@ -6,7 +6,7 @@ The application allows users to submit background jobs through a web interface. 
 
 ## Live Deployment
 
-- **Application:** http://65.1.148.118
+- **Application:** http://app.vegah-dr.indevs.in/
 - **GitHub Repository:** https://github.com/Prabhas55/vegah-devops-cloud-assessment
 - **Cloud Provider:** AWS EC2
 - **Container Registry:** GitHub Container Registry (GHCR)
@@ -489,7 +489,7 @@ The named PostgreSQL volume is retained when using `docker compose down`. Avoid 
 ## Assessment Deliverables
 
 - **GitHub Repository:** https://github.com/Prabhas55/vegah-devops-cloud-assessment
-- **Live Application:** http://65.1.148.118
+- **Live Application:** http://app.vegah-dr.indevs.in/
 - **Cloud Platform:** AWS EC2
 - **CI/CD:** GitHub Actions
 - **Container Registry:** GitHub Container Registry
@@ -501,6 +501,8 @@ The named PostgreSQL volume is retained when using `docker compose down`. Avoid 
 VEGAH DevOps Cloud Engineering Internship Assessment
 
 ## Disaster Recovery (Round 2)
+
+**Measured (14 Nov 2026):** RTO about 65 s at the public URL; RPO 0 (31 of 31 job records preserved).
 
 Cross-region DR for the whole stack: PostgreSQL streaming replication, Redis replica, Route 53 failover DNS, Terraform-provisioned DR site, and scripted failover/failback.
 
